@@ -12,7 +12,7 @@ namespace WelcomeToJurassicPark
         public DateTime WhenAcquired { get; set; } = DateTime.Now;
         public string Description() // Correct for herbivore/carnivore grammatical differences //
         {
-            return $"This dinosaur's name is {Name}. It's a {DietType}, and it weighs {Weight} pounds. It's housed in enclosure {EnclosureNumber}, and it was acquired on {WhenAcquired.ToString("MM/dd/yyyy")}.";
+            return $"We have a dinosaur named {Name}. {Name} is a {DietType} that weighs {Weight} pounds. {Name} is housed in Enclosure {EnclosureNumber} and was acquired on {WhenAcquired.ToString("MM/dd/yyyy")}.";
         }
     }
     class Program
@@ -70,7 +70,8 @@ namespace WelcomeToJurassicPark
                         if (dinoList.Count > 0)
                         {
                             var byDateAcquired = dinoList.OrderBy(dino => dino.WhenAcquired);
-                            Console.WriteLine("Displaying All Dinosaurs in Database (in the order they were acquired by the park):");
+                            Console.WriteLine("Displaying All Dinosaurs in Database (in the order they were acquired):");
+                            Console.WriteLine();
                             foreach (var dino in byDateAcquired)
                             {
                                 Console.WriteLine(dino.Description());
@@ -79,7 +80,7 @@ namespace WelcomeToJurassicPark
                         else
                         {
 
-                            Console.WriteLine("There are no dinosaurs in the park at this time.");
+                            Console.WriteLine("There are no dinosaurs in the database!");
                         }
                         break;
                     case "A":
@@ -87,21 +88,22 @@ namespace WelcomeToJurassicPark
                         Console.WriteLine();
                         var newDino = new Dinosaur();
                         newDino.Name = PromptForString("What is the new dinosaur's name? ");
-                        newDino.DietType = PromptForString("Is the new dinosaur an herbivore or a carnivore? ").ToLower();
-                        newDino.Weight = PromptForInteger("How much does the new dinosaur weigh? (in pounds) ");
-                        newDino.EnclosureNumber = PromptForInteger("What enclosure will the new dinosaur be living in? ");
+                        newDino.DietType = PromptForString($"Is {newDino.Name} an herbivore or a carnivore? ").ToLower();
+                        newDino.Weight = PromptForInteger($"How much does {newDino.Name} weigh (in pounds)? ");
+                        newDino.EnclosureNumber = PromptForInteger($"What enclosure will {newDino.Name} be living in? ");
                         dinoList.Add(newDino);
-                        Console.WriteLine($"{newDino.Name} has been added to the database.");
+                        Console.WriteLine();
+                        Console.WriteLine($"{newDino.Name} has been added to the database!");
                         break;
                     case "R":
                         Console.Clear();
                         Console.WriteLine("");
-                        var dinoToRemoveName = PromptForString("What dinosaur are you trying to remove: ");
+                        var dinoToRemoveName = PromptForString("What dinosaur are you trying to remove? ");
                         Dinosaur dinoToRemove = dinoList.FirstOrDefault(dino => dino.Name == dinoToRemoveName);
                         Console.WriteLine("");
                         if (dinoToRemove == null)
                         {
-                            Console.WriteLine($"No dinosaurs named {dinoToRemoveName} in the database!");
+                            Console.WriteLine($"There are no dinosaurs named {dinoToRemoveName} in the database!");
                         }
                         else
                         {
@@ -112,19 +114,19 @@ namespace WelcomeToJurassicPark
                     case "T":
                         Console.Clear();
                         Console.WriteLine("");
-                        var dinoToTransferName = PromptForString("What dinosaur are you trying to transfer: ");
+                        var dinoToTransferName = PromptForString("What dinosaur are you trying to transfer? ");
                         Dinosaur dinoToTransfer = dinoList.FirstOrDefault(dino => dino.Name == dinoToTransferName);
                         Console.WriteLine("");
                         if (dinoToTransfer == null)
                         {
-                            Console.WriteLine("No dinosaurs by that name to transfer!");
+                            Console.WriteLine($"There are no dinosaurs named {dinoToTransferName} in the database!");
                         }
                         else
                         {
-                            var newEnclosureNumber = PromptForInteger($"What enclosure number will {dinoToTransfer.Name} be transferred to? ");
+                            var newEnclosureNumber = PromptForInteger($"What enclosure will {dinoToTransfer.Name} be transferred to? ");
                             dinoToTransfer.EnclosureNumber = newEnclosureNumber;
                             Console.WriteLine();
-                            Console.WriteLine($"{dinoToTransfer.Name} has been transferred to {dinoToTransfer.EnclosureNumber}");
+                            Console.WriteLine($"{dinoToTransfer.Name} has been transferred to Enclosure {dinoToTransfer.EnclosureNumber}!");
                         }
                         break;
                     case "D": // correct grammar for examples where there is more than one dinosaur //
@@ -133,8 +135,8 @@ namespace WelcomeToJurassicPark
                         Console.WriteLine("Displaying Summary:");
                         var numHerbivores = dinoList.Count(dino => dino.DietType == "carnivore");
                         var numCarnivores = dinoList.Count(dino => dino.DietType == "herbivore");
-                        Console.WriteLine($"There are {numHerbivores} herbivores at the park.");
-                        Console.WriteLine($"There are {numCarnivores} carnivores at the park.");
+                        Console.WriteLine($"There are {numHerbivores} herbivores in the park!");
+                        Console.WriteLine($"There are {numCarnivores} carnivores in the park!");
                         break;
                     case "Q":
                         Console.Clear();
