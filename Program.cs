@@ -10,9 +10,9 @@ namespace WelcomeToJurassicPark
         public double Weight { get; set; }
         public int EnclosureNumber { get; set; }
         public DateTime WhenAcquired { get; set; } = DateTime.Now;
-        public string Description() // Correct for herbivore/carnivore grammatical differences //
+        public string Description()
         {
-            return $"We have a dinosaur named {Name}. {Name} is a {DietType} that weighs {Weight} pounds. {Name} is housed in Enclosure {EnclosureNumber} and was acquired on {WhenAcquired.ToString("MM/dd/yyyy")}.";
+            return $"There's a dinosaur named {Name} at the park. {Name} is a {DietType} that weighs {Weight} pounds. {Name} is housed in Enclosure {EnclosureNumber} and was acquired on {WhenAcquired.ToString("MM/dd/yyyy")}.";
         }
     }
     class Program
@@ -40,6 +40,21 @@ namespace WelcomeToJurassicPark
                 return 0;
             }
         }
+        static string Menu()
+        {
+            Console.WriteLine();
+            Console.WriteLine("What do you want to do?");
+            Console.WriteLine("(V)iew all dinosaurs in the park");
+            Console.WriteLine("(Vi)ew dinosaurs by enclosure number");
+            Console.WriteLine("(A)dd a dinosaur to the park");
+            Console.WriteLine("(R)emove a dinosaur from the park");
+            Console.WriteLine("(T)ransfer a dinosaur to another enclosure");
+            Console.WriteLine("(D)isplay summary of in-house dinosaurs");
+            Console.WriteLine("(Di)splay dinosaurs acquired after date");
+            Console.WriteLine("(Q)uit the application");
+            var choice = Console.ReadLine().ToUpper();
+            return choice;
+        }
 
         static void Main(string[] args)
         {
@@ -52,16 +67,7 @@ namespace WelcomeToJurassicPark
             var keepGoing = true;
             while (keepGoing)
             {
-
-                Console.WriteLine();
-                Console.WriteLine("What do you want to do?");
-                Console.WriteLine("(V)iew all dinosaurs in the park");
-                Console.WriteLine("(A)dd a dinosaur to the park");
-                Console.WriteLine("(R)emove a dinosaur from the park");
-                Console.WriteLine("(T)ransfer a dinosaur to another enclosure");
-                Console.WriteLine("(D)isplay a summary of in-house dinosaurs");
-                Console.WriteLine("(Q)uit the application");
-                var choice = Console.ReadLine().ToUpper();
+                var choice = Menu();
                 switch (choice)
                 {
                     case "V":
@@ -129,19 +135,79 @@ namespace WelcomeToJurassicPark
                             Console.WriteLine($"{dinoToTransfer.Name} has been transferred to Enclosure {dinoToTransfer.EnclosureNumber}!");
                         }
                         break;
-                    case "D": // correct grammar for examples where there is more than one dinosaur //
+                    case "D":
                         Console.Clear();
                         Console.WriteLine("");
                         Console.WriteLine("Displaying Summary:");
                         var numHerbivores = dinoList.Count(dino => dino.DietType == "carnivore");
                         var numCarnivores = dinoList.Count(dino => dino.DietType == "herbivore");
-                        Console.WriteLine($"There are {numHerbivores} herbivores in the park!");
-                        Console.WriteLine($"There are {numCarnivores} carnivores in the park!");
+                        if (numHerbivores == 1)
+                        {
+                            Console.WriteLine($"There is {numHerbivores} herbivore in the park!");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"There are {numHerbivores} herbivores in the park!");
+                        }
+                        if (numCarnivores == 1)
+                        {
+                            Console.WriteLine($"There is {numCarnivores} carnivore in the park!");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"There are {numCarnivores} carnivores in the park!");
+                        }
                         break;
                     case "Q":
                         Console.Clear();
                         Console.WriteLine("");
                         keepGoing = false;
+                        break;
+                    case "DI":
+                        Console.Clear();
+                        Console.WriteLine("");
+                        Console.WriteLine("Enter desired date in the following format: Jan 1, 2009");
+                        string dateInput = Console.ReadLine();
+                        Console.WriteLine("");
+                        var parsedDate = DateTime.Parse(dateInput);
+                        var dinosAcquiredAfterDate = dinoList.Where(dino => dino.WhenAcquired > parsedDate);
+                        if (dinosAcquiredAfterDate.Count() > 0)
+                        {
+                            Console.WriteLine("Displaying Dinosaurs Acquired After Date:");
+                            Console.WriteLine("");
+                            foreach (var dino in dinosAcquiredAfterDate)
+                            {
+                                Console.WriteLine(dino.Description());
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"No dinosaurs were acquired after {dateInput}!");
+                        }
+                        break;
+                    case "VI":
+                        Console.Clear();
+                        Console.WriteLine("");
+                        Console.Write("What enclosure would you like to view? ");
+                        string enclosureToBeViewed = Console.ReadLine();
+                        int enclosureToBeViewedAsInt;
+                        var isThisGoodInput = int.TryParse(enclosureToBeViewed, out enclosureToBeViewedAsInt);
+                        Console.WriteLine("");
+                        var dinosInEnclosure = dinoList.Where(dino => dino.EnclosureNumber == enclosureToBeViewedAsInt);
+                        if (isThisGoodInput && dinosInEnclosure.Count() > 0)
+                        {
+                            Console.WriteLine($"Displaying Dinosaurs in Enclosure {enclosureToBeViewedAsInt}:");
+                            Console.WriteLine("");
+                            foreach (var dino in dinosInEnclosure)
+                            {
+                                Console.WriteLine($"There's a dinosaur named {dino.Name} housed in Enclosure {dino.EnclosureNumber}. {dino.Name} is a {dino.DietType} that weighs {dino.Weight} pounds. {dino.Name} was acquired on {dino.WhenAcquired.ToString("MM/dd/yyyy")}.");
+                                Console.WriteLine();
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"There are no dinosaurs in Enclosure {enclosureToBeViewed}!");
+                        }
                         break;
                 }
             }
